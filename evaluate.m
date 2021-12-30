@@ -1,7 +1,7 @@
-function Vx = evaluate(geno,multiCubeSize)
-tic
-Titv = 10;%total time interval in sec 10
-dt=0.005;
+function Vx = evaluate(geno,multiCubeSize,Titv,dt)
+
+%Titv = 10;%total time interval in sec 10
+%dt=0.005;
 T = 0; %global time
 iteration = Titv/dt;
 %multiCubeSize = 5;
@@ -105,5 +105,5 @@ end
 centroidf = centroidf/nMass;
 
 Vx = (centroidf(1) - centroid0(1))/Titv;
-toc
+
 end

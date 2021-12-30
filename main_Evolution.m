@@ -2,13 +2,10 @@ clear all;
 close all;
 clc;
 
-%Titv = 30;%total time interval
-%dt=0.005;
+Titv = 10;%total time interval
+dt=0.005;
 
 %spring parameters
-% kMin = 1000; kMax = 10000;
-% bMax = 4;
-% cMax = 2*pi;
 jMax = 300;%iteration number
 
 %generate initial population
@@ -16,20 +13,20 @@ pop = 20;
 multiCubeSize=5;
 nCube=(multiCubeSize-1)^3;
 
-
 genoPop = zeros(pop,nCube);
 popSpeed = zeros(pop,2);
 popSpeed(:,1) = [1:pop];
 totPopSpeed = zeros(pop,jMax);
 %totGenoBest = zeros(jMax,nCube);
-for i = 1:pop
+parfor i = 1:pop
+    i
     genoPop(i,:)=randi(3,1,nCube)-1;
-    popSpeed(i,2) = evaluate(genoPop(i,:),multiCubeSize);
+    popSpeed(i,2) = evaluate(genoPop(i,:),multiCubeSize,Titv,dt);
 end
 disp('initial population speed evaluated');
 
 %sort initial population
-
+tic
 popSpeed = sortrows(popSpeed,2,'descend');
 rankedIndex = popSpeed(:,1);
 genoPopSorted = zeros(pop,nCube);
@@ -38,11 +35,9 @@ for i = 1:pop
 end
 genoPop = genoPopSorted;
 popSpeed = popSpeed(:,2);
-
+toc
 
 for j = 1:jMax
-
-    
     %inheritate a child
     chosen = randi(pop,1,2);%choose two individual to be parent
     parent1 = genoPop(chosen(1),:);

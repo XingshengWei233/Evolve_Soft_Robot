@@ -9,7 +9,7 @@ iteration = Titv/dt;
 %geno = importdata('genoBestEA10000iter100pop.txt');
 geno = importdata('genoBest pop20iter300.txt');
 geno = geno(10,:);
-[Vx,P,m,sp,c] = evaluateP(geno,5);
+[Vx,P,m,sp,c] = evaluateP(geno,5,Titv,dt);
 %%
 fps = 25;
 v = VideoWriter('final10.avi');

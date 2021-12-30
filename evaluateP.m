@@ -1,7 +1,7 @@
-function [Vx,P,m,sp,c] = evaluateP(geno,multiCubeSize)
+function [Vx,P,m,sp,c] = evaluateP(geno,multiCubeSize,Titv,dt)
 tic
-Titv = 10;%total time interval in sec 10
-dt=0.005;
+%Titv = 10;%total time interval in sec 10
+%dt=0.005;
 T = 0; %global time
 iteration = Titv/dt;
 %multiCubeSize = 5;
