@@ -2,15 +2,15 @@ clear all;
 close all;
 clc;
 
-Titv = 1;%total time interval 10
+Titv = 10;%total time interval 10
 dt=0.005;
 nCore = 4;
 
 %spring parameters
-jMax = 10;%iteration number 300
+jMax = 500;%iteration number 500
 
 %generate initial population
-pop = 8; %50
+pop = 50; %50
 multiCubeSize=5;
 nCube=(multiCubeSize-1)^3;
 
@@ -18,6 +18,9 @@ genoPop = zeros(pop,nCube);
 popSpeed = zeros(pop,2);
 popSpeed(:,1) = [1:pop];
 totPopSpeed = zeros(pop,jMax);
+
+n = [1:jMax];
+totSpeedBest = zeros(1,jMax);
 %totGenoBest = zeros(jMax,nCube);
 parfor i = 1:pop
     i
@@ -76,14 +79,17 @@ for j = 1:jMax
     fprintf(fileGeno,'\n');
     
     %record best speed
-    %totSpeedBest(j) = popSpeed(1);
+    totSpeedBest(j) = popSpeed(1);
+    figure(1)
+    plot(n(1:j),totSpeedBest(1:j));
     %totPopSpeed(:,j) = popSpeed;
     %totGenoBest(j,:) = genoPop(1,:);
     disp('iteration:')
     disp(j)
 end
 %% write in file:
-
+fclose(fileSpeed);
+fclose(fileGeno);
 fileLastGeno = fopen('genoLastGeneration.txt','w');
 for i = 1:pop
     fprintf(fileLastGeno,'%d ',genoPop(i,:));
