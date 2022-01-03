@@ -7,12 +7,16 @@ dt=0.005;
 
 iteration = Titv/dt;
 %geno = importdata('genoBestEA10000iter100pop.txt');
-geno = importdata('totBestGenoC 50-200.txt');
-geno = geno(end,:);
+geno1 = importdata('Run1/totBestGeno 50-500.txt');
+geno2 = importdata('Run1/totBestGenoC 50-300.txt');
+geno3 = importdata('Run1/totBestGenoC 50-200.txt');
+genoTot = [geno1;geno2;geno3];
+geno = genoTot(600,:);
+%%
 [Vx,P,m,sp,c] = evaluateP(geno,5,Titv,dt);
 %%
 fps = 25;
-v = VideoWriter('test4.avi');
+v = VideoWriter('test600.avi');
 v.FrameRate = fps;
 open(v);
 
