@@ -1,4 +1,5 @@
 # Evolve Soft Robot
+Author: Jiyuan Hu, Xingsheng Wei
 ## Description:
 1. Use MATLAB to build a physics simulator from scratch by creating mass and spring elements, velocity proportional damping and friction law.
 2. Use evolutionary algorithm (EA) to evolve a soft robot that "walks" as fast as possible along x-axis. (For practice purpose the algorithm is written without using EA related libraries).
