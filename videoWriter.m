@@ -2,7 +2,7 @@
 clear all
 close all
 clc
-Titv = 10;%total time interval
+Titv = 5;%total time interval
 dt=0.005;
 
 iteration = Titv/dt;
@@ -12,11 +12,14 @@ geno2 = importdata('Run1/totBestGenoC 50-300.txt');
 geno3 = importdata('Run1/totBestGenoC 50-200.txt');
 genoTot = [geno1;geno2;geno3];
 geno = genoTot(600,:);
+
+geno = 0;
 %%
-[Vx,P,m,sp,c] = evaluateP(geno,5,Titv,dt);
+%[Vx,P,m,sp,c] = evaluateP(geno,5,Titv,dt);
+[Vx,P,m,sp,c] = evaluateP(geno,2,Titv,dt);
 %%
 fps = 25;
-v = VideoWriter('test600.avi');
+v = VideoWriter('voidCube.avi');
 v.FrameRate = fps;
 open(v);
 

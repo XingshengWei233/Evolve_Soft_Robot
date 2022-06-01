@@ -17,7 +17,7 @@ for i = 1:length(sp)
     plot3Spring(P,f,sp(i));%plot spring
 end
 
-for i = 1:length(c)
+for i = 1:size(c,1)
     if geno(i) == 1
         fill3Square(P,f,c(i,1),c(i,5),c(i,6),c(i,2),'g');
         fill3Square(P,f,c(i,1),c(i,3),c(i,4),c(i,2),'g');

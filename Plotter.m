@@ -3,9 +3,9 @@ close all;
 clc;
 
 %% load homework data
-EAspeed1 = importdata('totPopSpeed 50-500.txt');
-EAspeed2 = importdata('totPopSpeedC50-300.txt');
-EAspeed3 = importdata('totPopSpeedC 50-200.txt');
+EAspeed1 = importdata('Run1/totPopSpeed 50-500.txt');
+EAspeed2 = importdata('Run1/totPopSpeedC50-300.txt');
+EAspeed3 = importdata('Run1/totPopSpeedC 50-200.txt');
 EAspeed = [EAspeed1;EAspeed2;EAspeed3]';
 %%
 %plot

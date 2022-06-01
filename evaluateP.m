@@ -17,6 +17,7 @@ verteces = L*lattice(multiCubeSize);%define the lattice of mass
 cubeCenters = lattice(multiCubeSize-1);%define the lattice of cube centers
 nCube = size(cubeCenters,1);
 offSet = [0 0 0.1];
+offSet = [0 0 1];
 nMass = size(verteces,1); %number of mass
 P0 = ones(nMass,1)*offSet+verteces;
 
