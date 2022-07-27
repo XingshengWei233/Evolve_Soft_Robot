@@ -12,8 +12,8 @@ classdef Spring
         vertex2
         L %rest length
         L0 %rest length with no breath
-        m1Index
-        m2Index
+        m1index
+        m2index
         index
         b
     end
@@ -23,8 +23,8 @@ classdef Spring
         function obj = Spring(Mass1,Mass2,b)
             %SPRING Construct an instance of this class
             %   Detailed explanation goes here
-            obj.m1Index = Mass1.index;
-            obj.m2Index = Mass2.index;
+            obj.m1index = Mass1.index;
+            obj.m2index = Mass2.index;
             obj.vertex1 = Mass1.P;
             obj.vertex2 = Mass2.P;
             obj.L = norm(Mass1.P-Mass2.P);

@@ -1,0 +1,27 @@
+classdef Population
+    %POPULATION Summary of this class goes here
+    %   Detailed explanation goes here
+    
+    properties
+        genomes
+        popSize
+        sideLength
+    end
+    
+    methods
+        function obj = Population(popSize, sideLength, nUnitCubeType)
+            %POPULATION Construct an instance of this class
+            %   Detailed explanation goes here
+            obj.popSize = popSize;
+            obj.sideLength = sideLength;
+            obj.genomes = randi(nUnitCubeType, [popSize, sideLength, sideLength, sideLength]);
+        end
+        
+        function outputArg = sort(obj,inputArg)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            outputArg = obj.Property1 + inputArg;
+        end
+    end
+end
+
