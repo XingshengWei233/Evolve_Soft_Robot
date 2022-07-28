@@ -15,8 +15,8 @@ classdef Population
             %   Detailed explanation goes here
             obj.popSize = popSize;
             obj.sideLength = sideLength;
-            obj.genomes = randi(nUnitCubeType, [popSize, sideLength, sideLength, sideLength]);
-            obj.speeds = obj.evaluatePop();
+            obj.genomes = randi(nUnitCubeType, [popSize, sideLength, sideLength, sideLength]) - 1;
+            %obj.speeds = obj.evaluatePop();
             disp('population generated')
         end
         

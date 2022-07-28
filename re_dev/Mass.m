@@ -19,12 +19,14 @@ classdef Mass
     methods
         function obj = Mass(initialPosition)
             obj.P = [initialPosition(1),initialPosition(2),initialPosition(3)];
-            obj.mass = 1;
+            obj.mass = 0;
             obj.G = [0,0,1]*-9.81*obj.mass;     
             obj.V = [0,0,0];
             obj.Fr = obj.G;
             obj.A = obj.Fr*obj.mass;
             obj.damp = 0.9;
+            obj.mConnectedIndex = zeros(0, 3);
+            obj.spIndex = zeros(1, 0);
             
         end
         

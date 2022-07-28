@@ -20,7 +20,7 @@ classdef Spring
     
     
     methods
-        function obj = Spring(Mass1,Mass2,b)
+        function obj = Spring(Mass1,Mass2, b)
             %SPRING Construct an instance of this class
             %   Detailed explanation goes here
             obj.m1index = Mass1.index;

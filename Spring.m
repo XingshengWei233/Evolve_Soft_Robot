@@ -15,12 +15,13 @@ classdef Spring
         m1Index
         m2Index
         index
+        type
         b
     end
     
     
     methods
-        function obj = Spring(Mass1,Mass2,b)
+        function obj = Spring(Mass1,Mass2)
             %SPRING Construct an instance of this class
             %   Detailed explanation goes here
             obj.m1Index = Mass1.index;
@@ -29,7 +30,7 @@ classdef Spring
             obj.vertex2 = Mass2.P;
             obj.L = norm(Mass1.P-Mass2.P);
             obj.L0 = norm(Mass1.P-Mass2.P);
-            obj.b = b;
+            obj.b = 1;
         end
         
         function obj = updateVertex(obj,Mass1,Mass2)
