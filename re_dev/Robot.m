@@ -1,23 +1,191 @@
 classdef Robot
-    %ROBOT Summary of this class goes here
+    %SIMULATION Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
-        Property1
+        genome
+        dt
+        unitL
+        sideLength
+        masses
+        springs
+        mu
+        damp
+        gravity
+        startPos
+        Kf
+        T
     end
     
     methods
-        function obj = Robot(inputArg1,inputArg2)
-            %ROBOT Construct an instance of this class
+        function obj = Robot(genome, startPos, Kf, mu)
+            %SIMULATION Construct an instance of this class
             %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+            obj.genome = genome;
+            obj.startPos = startPos;
+            obj.sideLength = size(genome, 1);
+            obj.dt = 0.01;
+            obj.unitL = 1;
+            obj.Kf = Kf;
+            obj.mu = mu;
+
+            obj.masses = obj.generateMasses();
+            obj.springs = Spring.empty(0);
+            obj = obj.generateSprings();
+            obj.T = 0;
+            
         end
         
-        function outputArg = method1(obj,inputArg)
+        function masses = unitCubeAddMass(obj, masses, i, j, k)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+            for a = 0:1
+                for b = 0:1
+                    for c = 0:1
+                        masses(i+a, j+b, k+c).mass = 1;
+                    end
+                end
+            end
         end
+        
+        function masses = generateMasses(obj)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            masses = Mass.empty(0);
+            for k = 1 : obj.sideLength + 1
+                for j = 1 : obj.sideLength + 1
+                    for i = 1 : obj.sideLength + 1
+                        masses(end + 1) = Mass([i j k]);
+                        masses(end).P = [i j k] + obj.startPos - 1;
+                    end
+                end
+            end
+            masses = reshape(masses, obj.sideLength + 1, obj.sideLength + 1, obj.sideLength + 1);
+            for i = 1 : obj.sideLength
+                for j = 1 : obj.sideLength
+                    for k = 1 : obj.sideLength
+                        if obj.genome(i, j, k) ~= 0
+                            masses = obj.unitCubeAddMass(masses, i, j, k);
+                        end
+                    end
+                end
+            end
+        end
+        
+        function obj = connect(obj, massIndex1, massIndex2, b)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            i1 = massIndex1(1); j1 = massIndex1(2); k1 = massIndex1(3);
+            i2 = massIndex2(1); j2 = massIndex2(2); k2 = massIndex2(3);
+            connected = false;
+            if ~isempty(obj.masses(i1, j1, k1).mConnectedIndex)
+                for i = 1 : size(obj.masses(i1, j1, k1).mConnectedIndex, 1)
+                    if obj.masses(i1, j1, k1).mConnectedIndex(i, :) == obj.masses(i2, j2, k2).index
+                        connected = true;
+                        spIndex = obj.masses(i1, j1, k1).spIndex(i);
+                        obj.springs(spIndex).b = min(obj.springs(spIndex).b, b);
+                    end
+                end
+            end
+            if connected == false
+                obj.springs(end + 1) = Spring(obj.masses(i1, j1, k1), obj.masses(i2, j2, k2), b);
+                obj.springs(end).index = length(obj.springs);
+                obj.springs(end).m1index = massIndex1;
+                obj.springs(end).m2index = massIndex2;
+                obj.masses(i1, j1, k1).mConnectedIndex(end + 1, :) = obj.masses(i2, j2, k2).index;
+                obj.masses(i1, j1, k1).spIndex(end + 1, :) = [obj.springs(end).index, 1];
+                obj.masses(i2, j2, k2).mConnectedIndex(end + 1, :) = obj.masses(i1, j1, k1).index;
+                obj.masses(i2, j2, k2).spIndex(end + 1, :) = [obj.springs(end).index, 2];
+            end
+        end
+        
+        function obj = unitCubeAddSpring(obj, i, j, k)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            unitType = obj.genome(i, j, k);
+            b = unitType - 1;
+            obj = obj.connect([i, j, k], [i+1, j, k], b);
+            obj = obj.connect([i, j, k], [i, j+1, k], b);
+            obj = obj.connect([i, j, k], [i, j, k+1], b);
+            obj = obj.connect([i, j, k], [i+1, j+1, k], b);
+            obj = obj.connect([i, j, k], [i, j+1, k+1], b);
+            obj = obj.connect([i, j, k], [i+1, j, k+1], b);
+            
+            obj = obj.connect([i+1, j+1, k], [i+1, j, k], b);
+            obj = obj.connect([i+1, j+1, k], [i, j+1, k], b);
+            obj = obj.connect([i+1, j+1, k], [i+1, j+1, k+1], b);
+            obj = obj.connect([i+1, j+1, k], [i+1, j, k+1], b);
+            obj = obj.connect([i+1, j+1, k], [i, j+1, k+1], b);
+            
+            obj = obj.connect([i+1, j, k+1], [i+1, j, k], b);
+            obj = obj.connect([i+1, j, k+1], [i, j, k+1], b);
+            obj = obj.connect([i+1, j, k+1], [i+1, j+1, k+1], b);
+            obj = obj.connect([i+1, j, k+1], [i, j+1, k+1], b);
+            
+            obj = obj.connect([i, j+1, k+1], [i, j+1, k], b);
+            obj = obj.connect([i, j+1, k+1], [i, j, k+1], b);
+            obj = obj.connect([i, j+1, k+1], [i+1, j+1, k+1], b);
+        end
+        
+        function obj = generateSprings(obj)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            obj.springs = Spring.empty(0);
+            for i = 1 : obj.sideLength
+                for j = 1 : obj.sideLength
+                    for k = 1 : obj.sideLength
+                        if obj.genome(i, j, k) ~= 0
+                            obj = obj.unitCubeAddSpring(i, j, k);
+                        end
+                    end
+                end
+            end
+        end
+        
+        function obj = step(obj)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            for i = 1:obj.sideLength + 1
+                for j = 1:obj.sideLength + 1
+                    for k = 1:obj.sideLength + 1
+
+                        obj.masses(i,j,k) = obj.masses(i,j,k).resetF();
+                        obj.masses(i,j,k) = obj.masses(i,j,k).addFloorForce(obj.Kf,obj.mu);
+
+                    end
+                end
+            end
+
+            for i = 1:length(obj.springs)
+                if obj.springs(i).b~=0
+                    obj.springs(i) = obj.springs(i).updateL(obj.T);%breath
+                end
+            end
+            
+            for i = 1:obj.sideLength + 1
+                for j = 1:obj.sideLength + 1
+                    for k = 1:obj.sideLength + 1
+
+                        for a = 1:size(obj.masses(i,j,k).spIndex,1)
+                            obj.masses(i,j,k) = obj.masses(i,j,k).addSpringForce( ...
+                                obj.springs(obj.masses(i,j,k).spIndex(a,1)).sprF(obj.masses(i,j,k).spIndex(a,2)));
+                        end
+                        obj.masses(i,j,k) = obj.masses(i,j,k).updateStatus(obj.dt);
+
+                    end
+                end
+            end
+
+            for i = 1:length(obj.springs)
+                i1 = obj.springs(i).m1index(1); j1 = obj.springs(i).m1index(2); k1 = obj.springs(i).m1index(3);
+                i2 = obj.springs(i).m2index(1); j2 = obj.springs(i).m2index(2); k2 = obj.springs(i).m2index(3);
+                obj.springs(i) = obj.springs(i).updateVertex( ...
+                    obj.masses(i1,j1,k1),obj.masses(i2,j2,k2));
+            end
+
+            obj.T = obj.T + obj.dt;
+        end
+        
+
     end
 end
-

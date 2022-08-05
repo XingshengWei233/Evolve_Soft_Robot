@@ -5,15 +5,18 @@ sideLen = 2;
 pop = Population(1,sideLen,3);
 genome = pop.genomes(1,:,:,:);
 genome = squeeze(genome);
+%robot = Robot(genome, [0,0,1]);
 sim = Simulation(genome);
-masses_val = zeros(sideLen+1,sideLen+1,sideLen+1);
-for i = 1:sideLen+1
-    for j = 1:sideLen+1
-        for k = 1:sideLen+1
-            masses_val(i,j,k) = sim.masses(i,j,k).mass;
-        end
-    end
-end
+
+% masses_val = zeros(sideLen+1,sideLen+1,sideLen+1);
+% for i = 1:sideLen+1
+%     for j = 1:sideLen+1
+%         for k = 1:sideLen+1
+%             masses_val(i,j,k) = robot.masses(i,j,k).mass;
+%         end
+%     end
+% end
+
 %test connect
 % sim = sim.connect([1,1,1], [1,1,2], 1);
 % sim = sim.connect([1,1,1], [1,1,3], 1);
@@ -24,6 +27,14 @@ end
 
 
 
-mass1 = sim.masses(1,1,1);
-mass2 = sim.masses(1,1,2);
-springs = sim.springs;
+mass1 = sim.robot.masses(1,1,1);
+mass2 = sim.robot.masses(1,1,2);
+springs = sim.robot.springs;
+
+% for i = 1:10
+%     sim = sim.step();
+%     sim.robot.masses(1).P
+% end
+
+renderer = Renderer(sim);
+renderer.video();

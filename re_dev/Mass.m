@@ -17,8 +17,8 @@ classdef Mass
     end
     
     methods
-        function obj = Mass(initialPosition)
-            obj.P = [initialPosition(1),initialPosition(2),initialPosition(3)];
+        function obj = Mass(index)
+            obj.index = [index(1),index(2),index(3)];
             obj.mass = 0;
             obj.G = [0,0,1]*-9.81*obj.mass;     
             obj.V = [0,0,0];
@@ -26,7 +26,7 @@ classdef Mass
             obj.A = obj.Fr*obj.mass;
             obj.damp = 0.9;
             obj.mConnectedIndex = zeros(0, 3);
-            obj.spIndex = zeros(1, 0);
+            obj.spIndex = zeros(0, 2);
             
         end
         
