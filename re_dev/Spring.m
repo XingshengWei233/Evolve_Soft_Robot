@@ -29,7 +29,7 @@ classdef Spring
             obj.vertex2 = Mass2.P;
             obj.L = norm(Mass1.P-Mass2.P);
             obj.L0 = norm(Mass1.P-Mass2.P);
-            obj.b = b;
+            obj.b = b*2;
         end
         
         function obj = updateVertex(obj,Mass1,Mass2)

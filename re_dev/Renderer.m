@@ -5,6 +5,7 @@ classdef Renderer
     properties
         sim
         dt
+        genome
     end
     
     methods
@@ -13,6 +14,7 @@ classdef Renderer
             %   Detailed explanation goes here
             obj.sim = sim;
             obj.dt = sim.dt;
+            obj.genome = sim.genome;
 
         end
         
@@ -61,10 +63,46 @@ classdef Renderer
             end
         end
 
-        function obj = renderCube(obj,inputArg)
+        function obj = renderCube(obj,i,j,k)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+            if obj.genome(i,j,k) ~=0
+                if obj.genome(i,j,k) == 1
+                    color = 'g';
+                elseif obj.genome(i,j,k) == 2
+                    color = 'y';
+                end
+                verticesP = [obj.sim.robot.masses(i,j,k).P; obj.sim.robot.masses(i+1,j,k).P; ...
+                    obj.sim.robot.masses(i+1,j,k+1).P; obj.sim.robot.masses(i,j,k+1).P];
+                fill3(verticesP(:, 1), verticesP(:, 2), verticesP(:, 3), color)
+                verticesP = [obj.sim.robot.masses(i,j,k).P; obj.sim.robot.masses(i+1,j,k).P; ...
+                    obj.sim.robot.masses(i+1,j+1,k).P; obj.sim.robot.masses(i,j+1,k).P];
+                fill3(verticesP(:, 1), verticesP(:, 2), verticesP(:, 3), color)
+                verticesP = [obj.sim.robot.masses(i,j,k).P; obj.sim.robot.masses(i,j+1,k).P; ...
+                    obj.sim.robot.masses(i,j+1,k+1).P; obj.sim.robot.masses(i,j,k+1).P];
+                fill3(verticesP(:, 1), verticesP(:, 2), verticesP(:, 3), color)
+                verticesP = [obj.sim.robot.masses(i+1,j+1,k).P; obj.sim.robot.masses(i+1,j,k).P; ...
+                    obj.sim.robot.masses(i+1,j,k+1).P; obj.sim.robot.masses(i+1,j+1,k+1).P];
+                fill3(verticesP(:, 1), verticesP(:, 2), verticesP(:, 3), color)
+                verticesP = [obj.sim.robot.masses(i+1,j+1,k).P; obj.sim.robot.masses(i,j+1,k).P; ...
+                    obj.sim.robot.masses(i,j+1,k+1).P; obj.sim.robot.masses(i+1,j+1,k+1).P];
+                fill3(verticesP(:, 1), verticesP(:, 2), verticesP(:, 3), color)
+                verticesP = [obj.sim.robot.masses(i,j+1,k+1).P; obj.sim.robot.masses(i,j,k+1).P; ...
+                    obj.sim.robot.masses(i+1,j,k+1).P; obj.sim.robot.masses(i+1,j+1,k+1).P];
+                fill3(verticesP(:, 1), verticesP(:, 2), verticesP(:, 3), color)
+            end
+        end
+
+        function obj = renderSkin(obj)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            for i = 1:obj.sim.robot.sideLength
+                for j = 1:obj.sim.robot.sideLength
+                    for k = 1:obj.sim.robot.sideLength
+                        obj = obj.renderCube(i, j, k);
+                    end
+                end
+            end
         end
 
         function obj = renderFrame(obj)
@@ -78,7 +116,7 @@ classdef Renderer
             ylim([-scl scl])
             zlim([-0 scl])
             grid on
-            obj = obj.renderMass();
+            obj = obj.renderSkin();
             obj = obj.renderSpring();
         end
 
@@ -89,7 +127,7 @@ classdef Renderer
             v = VideoWriter('test.avi');
             v.FrameRate = fps;
             open(v);
-            maxSteps = 1000;
+            maxSteps = 2000;
             
             gap = 1/fps/obj.dt;
 

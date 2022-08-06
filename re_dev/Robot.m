@@ -4,34 +4,35 @@ classdef Robot
     
     properties
         genome
-        dt
         unitL
         sideLength
         masses
         springs
         mu
-        damp
-        gravity
-        startPos
         Kf
+        damp
+        g
+        startPos        
+        dt
         T
     end
     
     methods
-        function obj = Robot(genome, startPos, Kf, mu)
+        function obj = Robot(genome, mu, Kf, damp, g, startPos, dt)
             %SIMULATION Construct an instance of this class
             %   Detailed explanation goes here
             obj.genome = genome;
-            obj.startPos = startPos;
-            obj.sideLength = size(genome, 1);
-            obj.dt = 0.01;
             obj.unitL = 1;
-            obj.Kf = Kf;
+            obj.sideLength = size(genome, 1);
+            obj.startPos = startPos;
             obj.mu = mu;
-
+            obj.Kf = Kf;
+            obj.damp = damp;
+            obj.g = g;
             obj.masses = obj.generateMasses();
             obj.springs = Spring.empty(0);
             obj = obj.generateSprings();
+            obj.dt = dt;
             obj.T = 0;
             
         end
@@ -55,7 +56,7 @@ classdef Robot
             for k = 1 : obj.sideLength + 1
                 for j = 1 : obj.sideLength + 1
                     for i = 1 : obj.sideLength + 1
-                        masses(end + 1) = Mass([i j k]);
+                        masses(end + 1) = Mass([i j k], obj.damp, obj.g);
                         masses(end).P = [i j k] + obj.startPos - 1;
                     end
                 end
@@ -182,8 +183,26 @@ classdef Robot
                 obj.springs(i) = obj.springs(i).updateVertex( ...
                     obj.masses(i1,j1,k1),obj.masses(i2,j2,k2));
             end
-
+           
             obj.T = obj.T + obj.dt;
+        end
+
+        function COM = getCOM(obj)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            COM = [0, 0, 0];
+            totalMass = 0;
+            for i = 1:obj.sideLength + 1
+                for j = 1:obj.sideLength + 1
+                    for k = 1:obj.sideLength + 1
+                        if obj.masses(i, j, k).mass ~= 0
+                            COM = COM + obj.masses(i, j, k).P;
+                            totalMass = totalMass + obj.masses(i, j, k).mass;
+                        end
+                    end
+                end
+            end
+            COM = COM / totalMass;
         end
         
 

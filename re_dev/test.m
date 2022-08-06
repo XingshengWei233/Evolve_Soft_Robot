@@ -35,6 +35,8 @@ springs = sim.robot.springs;
 %     sim = sim.step();
 %     sim.robot.masses(1).P
 % end
-
+speed = sim.evaluate()
 renderer = Renderer(sim);
-renderer.video();
+renderer = renderer.renderFrame();
+
+%renderer.video();

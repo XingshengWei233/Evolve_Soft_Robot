@@ -4,27 +4,27 @@ classdef Mass
     properties (Constant)  
     end
     properties 
-        P;
-        Fr;
         mass;
-        V;
-        A;
-        damp;
+        P;
         G;
+        Fr;
+        A;
+        V;      
+        damp;
         index;
         spIndex;
         mConnectedIndex;
     end
     
     methods
-        function obj = Mass(index)
+        function obj = Mass(index, damp, g)
             obj.index = [index(1),index(2),index(3)];
             obj.mass = 0;
-            obj.G = [0,0,1]*-9.81*obj.mass;     
+            obj.G = g * obj.mass;     
             obj.V = [0,0,0];
             obj.Fr = obj.G;
-            obj.A = obj.Fr*obj.mass;
-            obj.damp = 0.9;
+            obj.A = obj.Fr * obj.mass;
+            obj.damp = damp;
             obj.mConnectedIndex = zeros(0, 3);
             obj.spIndex = zeros(0, 2);
             
@@ -45,7 +45,7 @@ classdef Mass
         end
         
         function obj = resetF(obj)
-            obj.Fr = [0,0,1]*-9.81*obj.mass;
+            obj.Fr = obj.G;
         end
         
         function obj = addSpringForce(obj,F)
