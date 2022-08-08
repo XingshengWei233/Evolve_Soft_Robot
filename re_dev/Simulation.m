@@ -53,7 +53,7 @@ classdef Simulation
             startX = startP(1);
             for i = 1:obj.maxSteps
                 obj = obj.step();
-                obj.robot.masses(1,1,1).P
+                obj.robot.masses(1,1,1).P;
             end
             endP = obj.robot.getCOM();
             endX = endP(1);
