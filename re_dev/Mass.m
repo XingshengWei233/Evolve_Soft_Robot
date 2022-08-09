@@ -6,7 +6,7 @@ classdef Mass
     properties 
         mass;
         P;
-        G;
+        g;
         Fr;
         A;
         V;      
@@ -20,9 +20,9 @@ classdef Mass
         function obj = Mass(index, damp, g)
             obj.index = [index(1),index(2),index(3)];
             obj.mass = 0;
-            obj.G = g * obj.mass;     
+            obj.g = g;     
             obj.V = [0,0,0];
-            obj.Fr = obj.G;
+%             obj.Fr = obj.G;
             obj.A = obj.Fr * obj.mass;
             obj.damp = damp;
             obj.mConnectedIndex = zeros(0, 3);
@@ -45,7 +45,7 @@ classdef Mass
         end
         
         function obj = resetF(obj)
-            obj.Fr = obj.G;
+            obj.Fr = obj.g * obj.mass;
         end
         
         function obj = addSpringForce(obj,F)

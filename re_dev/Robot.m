@@ -202,7 +202,12 @@ classdef Robot
                     end
                 end
             end
-            COM = COM / totalMass;
+            if totalMass == 0
+                COM = 0;
+            else
+                COM = COM / totalMass;
+            end
+
         end
         
 

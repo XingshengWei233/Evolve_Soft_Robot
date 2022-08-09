@@ -25,9 +25,10 @@ classdef Simulation
             obj.Kf = 10000;
             obj.damp = 0.9;
             obj.g = [0,0,-9.81];
-            obj.startPos = [0,0,1];
-            obj.dt = 0.01;
-            obj.maxSteps = 500; %10s
+            obj.startPos = [0,0,0.1];
+            obj.dt = 0.005;
+            duration = 10;
+            obj.maxSteps = duration / obj.dt; %10s
             obj.T = 0;
             obj.robot = Robot(genome, obj.mu, obj.Kf, obj.damp, obj.g, obj.startPos, obj.dt);
         end

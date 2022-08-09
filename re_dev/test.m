@@ -2,9 +2,9 @@ close all;
 clear all;
 
 sideLen = 2;
-pop = Population(1,sideLen,3);
-genome = pop.genomes(1,:,:,:);
-genome = squeeze(genome);
+pop = Population(5,sideLen);
+genome = pop.group{1, 1};
+%genome = squeeze(genome);
 %robot = Robot(genome, [0,0,1]);
 sim = Simulation(genome);
 
@@ -37,6 +37,6 @@ springs = sim.robot.springs;
 % end
 speed = sim.evaluate()
 renderer = Renderer(sim);
-renderer = renderer.renderFrame();
+%renderer = renderer.renderFrame();
 
 %renderer.video();

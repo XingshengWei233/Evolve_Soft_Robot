@@ -7,6 +7,8 @@ classdef Population
         sideLength
         mutationRate
         group
+        fitness
+        allSpeeds
     end
     
     methods
@@ -17,6 +19,8 @@ classdef Population
             obj.sideLength = sideLength;
             obj.mutationRate = 1.5 / sideLength ^ 3;
             obj.group = obj.generateGroup();
+            obj.fitness = obj.group{1, 2};
+            obj.allSpeeds = cell2mat(obj.group(:, 2));
             disp('population generated')
         end
         
@@ -97,10 +101,31 @@ classdef Population
             end
         end
         
-        function log(obj,inputArg)
+        function obj = plotCurve(obj)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+            obj.allSpeeds(:, end + 1) = cell2mat(obj.group(:, 2));
+            iteration = size(obj.allSpeeds, 2);
+            iterationAxis = 1 : iteration;
+            iterationAxis
+            obj.allSpeeds(1, :)
+
+            figure(1)
+            plot(iterationAxis, obj.allSpeeds(1, :), 'b')
+            hold on
+            grid on
+            for i = 1:iteration
+                plot(ones(obj.popSize, 1) * i, obj.allSpeeds(:, i), 'k.')
+            end
+            hold off
+        end
+
+        function obj = log(obj)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            popGroup = obj.group;
+            disp('logging')
+            save population.mat popGroup
         end
     end
 end
