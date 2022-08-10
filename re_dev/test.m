@@ -1,6 +1,11 @@
 close all;
 clear all;
 
+% TODO:
+%   make unit test script
+%   fix mass generation
+
+
 sideLen = 2;
 pop = Population(5,sideLen);
 genome = pop.group{1, 1};

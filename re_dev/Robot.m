@@ -1,26 +1,27 @@
 classdef Robot
-    %SIMULATION Summary of this class goes here
-    %   Detailed explanation goes here
+    %ROBOT Assemble a soft robot with masses and springs, 
+    %   that can execute dynamics by time steps
     
+
     properties
         genome
-        unitL
-        sideLength
+        unitL % Side length of unit cube
+        sideLength % Number of unit cubes per dimension
         masses
         springs
-        mu
-        Kf
-        damp
-        g
-        startPos        
+        mu % floor friction coefficient
+        Kf % stiffness of floor
+        damp % viscous friction coefficient
+        g % gravitational acceleration
+        startPos % start position of mass(1, 1, 1)      
         dt
         T
     end
     
+
     methods
         function obj = Robot(genome, mu, Kf, damp, g, startPos, dt)
             %SIMULATION Construct an instance of this class
-            %   Detailed explanation goes here
             obj.genome = genome;
             obj.unitL = 1;
             obj.sideLength = size(genome, 1);
@@ -34,24 +35,22 @@ classdef Robot
             obj = obj.generateSprings();
             obj.dt = dt;
             obj.T = 0;
-            
         end
         
+
         function masses = unitCubeAddMass(obj, masses, i, j, k)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            for a = 0:1
-                for b = 0:1
-                    for c = 0:1
+            %   generate springs for each unit cube
+            for a = 0 : 1
+                for b = 0 : 1
+                    for c = 0 : 1
                         masses(i+a, j+b, k+c).mass = 1;
                     end
                 end
             end
         end
         
+
         function masses = generateMasses(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
             masses = Mass.empty(0);
             for k = 1 : obj.sideLength + 1
                 for j = 1 : obj.sideLength + 1
@@ -72,10 +71,10 @@ classdef Robot
                 end
             end
         end
+
         
         function obj = connect(obj, massIndex1, massIndex2, b)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   connect 2 masses with a spring
             i1 = massIndex1(1); j1 = massIndex1(2); k1 = massIndex1(3);
             i2 = massIndex2(1); j2 = massIndex2(2); k2 = massIndex2(3);
             connected = false;
@@ -100,9 +99,9 @@ classdef Robot
             end
         end
         
+
         function obj = unitCubeAddSpring(obj, i, j, k)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   generate springs for each unit cube
             unitType = obj.genome(i, j, k);
             b = unitType - 1;
             obj = obj.connect([i, j, k], [i+1, j, k], b);
@@ -128,9 +127,8 @@ classdef Robot
             obj = obj.connect([i, j+1, k+1], [i+1, j+1, k+1], b);
         end
         
+
         function obj = generateSprings(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
             obj.springs = Spring.empty(0);
             for i = 1 : obj.sideLength
                 for j = 1 : obj.sideLength
@@ -143,29 +141,17 @@ classdef Robot
             end
         end
         
+        
         function obj = step(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   Execute dynamics over dt to next time step
+
+            %   step masses
             for i = 1:obj.sideLength + 1
                 for j = 1:obj.sideLength + 1
                     for k = 1:obj.sideLength + 1
 
                         obj.masses(i,j,k) = obj.masses(i,j,k).resetF();
                         obj.masses(i,j,k) = obj.masses(i,j,k).addFloorForce(obj.Kf,obj.mu);
-
-                    end
-                end
-            end
-
-            for i = 1:length(obj.springs)
-                if obj.springs(i).b~=0
-                    obj.springs(i) = obj.springs(i).updateL(obj.T);%breath
-                end
-            end
-            
-            for i = 1:obj.sideLength + 1
-                for j = 1:obj.sideLength + 1
-                    for k = 1:obj.sideLength + 1
 
                         for a = 1:size(obj.masses(i,j,k).spIndex,1)
                             obj.masses(i,j,k) = obj.masses(i,j,k).addSpringForce( ...
@@ -176,20 +162,27 @@ classdef Robot
                     end
                 end
             end
-
+            
+            % step springs
             for i = 1:length(obj.springs)
+                if obj.springs(i).b~=0
+                    obj.springs(i) = obj.springs(i).updateL(obj.T);%breath
+                end
                 i1 = obj.springs(i).m1index(1); j1 = obj.springs(i).m1index(2); k1 = obj.springs(i).m1index(3);
                 i2 = obj.springs(i).m2index(1); j2 = obj.springs(i).m2index(2); k2 = obj.springs(i).m2index(3);
                 obj.springs(i) = obj.springs(i).updateVertex( ...
                     obj.masses(i1,j1,k1),obj.masses(i2,j2,k2));
             end
-           
+            
+            % step time
             obj.T = obj.T + obj.dt;
         end
 
+
+
         function COM = getCOM(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   get center of mass
+            %   return 0 if total mass = 0
             COM = [0, 0, 0];
             totalMass = 0;
             for i = 1:obj.sideLength + 1
@@ -207,9 +200,6 @@ classdef Robot
             else
                 COM = COM / totalMass;
             end
-
         end
-        
-
     end
 end

@@ -1,7 +1,8 @@
 classdef Population
-    %POPULATION Summary of this class goes here
-    %   Detailed explanation goes here
+    %   A population of genomes that can perform
+    %   crossover, mutation, sorting and plotting training curve
     
+
     properties
         popSize
         sideLength
@@ -11,10 +12,10 @@ classdef Population
         allSpeeds
     end
     
+
     methods
         function obj = Population(popSize, sideLength)
             %POPULATION Construct an instance of this class
-            %   Detailed explanation goes here
             obj.popSize = popSize;
             obj.sideLength = sideLength;
             obj.mutationRate = 1.5 / sideLength ^ 3;
@@ -24,14 +25,15 @@ classdef Population
             disp('population generated')
         end
         
+
         function group = generateGroup(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   Make an array of cells with size (popSize x 2)
+            %   with genomes in first column and speed in second column
             group = cell(obj.popSize, 2);
             genomes = randi(3, [obj.popSize, obj.sideLength, obj.sideLength, obj.sideLength]) - 1;
             speeds = zeros(obj.popSize, 1);
             parfor i = 1 : obj.popSize
-                sim = Simulation(genomes(i,:,:,:));
+                sim = Simulation(genomes(i, :, :, :));
                 speeds(i) = sim.evaluate();
             end
             for i = 1:obj.popSize
@@ -42,25 +44,22 @@ classdef Population
         end
         
         
-        function obj = insertSortSelect(obj,newChildren, newSpeeds)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+        function obj = insertSortSelect(obj, newChildren, newSpeeds)
+            %   Sort new generated genomes into the population by speeds
+            %   and keep the top popSize of genomes
             nNew = length(newSpeeds);
-
             for i = 1:nNew
                 obj.group{obj.popSize+i, 1} = squeeze(newChildren(i, :, :, :));
                 obj.group{obj.popSize+i, 2} = newSpeeds(i);
-
             end
-
             obj.group = sortrows(obj.group, 2, "descend");
             obj.group = obj.group(1:obj.popSize, :);
-
+            obj.allSpeeds(:, end + 1) = cell2mat(obj.group(:, 2));
         end
+
         
         function child = crossover(obj,parent1,parent2)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   Crossover two genomes
 
             %swap parent1 and parent2by prob:
             if rand(1) < 0.5
@@ -82,14 +81,11 @@ classdef Population
                     child(:, :, index:end) = parent2(:, :, index:end);
                 end
             end
-            
-            
-
         end
         
+
         function genome = mutate(obj, genome)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+            %   Mutate one genome
             for i = 1:obj.sideLength
                 for j = 1:obj.sideLength
                     for k = 1:obj.sideLength
@@ -101,18 +97,17 @@ classdef Population
             end
         end
         
+
         function obj = plotCurve(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            obj.allSpeeds(:, end + 1) = cell2mat(obj.group(:, 2));
+            %   Plot the training curve with individual speeds
             iteration = size(obj.allSpeeds, 2);
             iterationAxis = 1 : iteration;
-            iterationAxis
-            obj.allSpeeds(1, :)
-
             figure(1)
             plot(iterationAxis, obj.allSpeeds(1, :), 'b')
             hold on
+            title('Fitness Curve')
+            xlabel('Iteration')
+            ylabel('Velocity on X Direction')
             grid on
             for i = 1:iteration
                 plot(ones(obj.popSize, 1) * i, obj.allSpeeds(:, i), 'k.')
@@ -120,9 +115,9 @@ classdef Population
             hold off
         end
 
-        function obj = log(obj)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
+
+        function obj = save(obj)
+            %   Save the current genomes and speeds of population
             popGroup = obj.group;
             disp('logging')
             save population.mat popGroup

@@ -1,27 +1,25 @@
 clc
 clear all
-%init sims first
 
 %define parameters
 sideLength = 2;
-popSize = 64;
-nUnitCubeType = 2;
+popSize = 20;
 nWorker = 6;
-iteration = 100;
+iteration = 10;
 logInterval = 2;
 
 %generate a population of genome
-
 pop = Population(popSize, sideLength);
 
 %loop:
 for j = 1 : iteration
     t0 = tic;
+
+    %produce new generation
     children = zeros(nWorker, sideLength, sideLength, sideLength);
     speeds = zeros(nWorker, 1);
     speed = 0;
     parfor i = 1 : nWorker
-        
         %select parents
         parent1 = pop.group{randi(popSize), 1};
         parent2 = pop.group{randi(popSize), 1};
@@ -33,12 +31,16 @@ for j = 1 : iteration
         speed = sim.evaluate();
         speeds(i) = speed;
     end
+
+    %sort and select
     pop = pop.insertSortSelect(children, speeds);
-    
+
+    %visualize and save
     pop = pop.plotCurve();
     if rem(j, logInterval) == 0
-        pop = pop.log();
+        pop = pop.save();
     end
+
     t_iter = toc(t0);
     disp(strcat('iteration: ', num2str(j), ' time: ', num2str(t_iter)));
 end
