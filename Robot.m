@@ -30,7 +30,7 @@ classdef Robot
             obj.Kf = Kf;
             obj.damp = damp;
             obj.g = g;
-            obj.masses = obj.generateMasses();
+            obj = obj.generateMasses();
             obj.springs = Spring.empty(0);
             obj = obj.generateSprings();
             obj.dt = dt;
@@ -38,34 +38,34 @@ classdef Robot
         end
         
 
-        function masses = unitCubeAddMass(obj, masses, i, j, k)
+        function obj = unitCubeAddMass(obj, i, j, k)
             %   generate springs for each unit cube
             for a = 0 : 1
                 for b = 0 : 1
                     for c = 0 : 1
-                        masses(i+a, j+b, k+c).mass = 1;
+                        obj.masses(i+a, j+b, k+c).mass = 1;
                     end
                 end
             end
         end
         
 
-        function masses = generateMasses(obj)
-            masses = Mass.empty(0);
+        function obj = generateMasses(obj)
+            obj.masses = Mass.empty(0);
             for k = 1 : obj.sideLength + 1
                 for j = 1 : obj.sideLength + 1
                     for i = 1 : obj.sideLength + 1
-                        masses(end + 1) = Mass([i j k], obj.damp, obj.g);
-                        masses(end).P = [i j k] + obj.startPos - 1;
+                        obj.masses(end + 1) = Mass([i j k], obj.damp, obj.g);
+                        obj.masses(end).P = [i j k] + obj.startPos - 1;
                     end
                 end
             end
-            masses = reshape(masses, obj.sideLength + 1, obj.sideLength + 1, obj.sideLength + 1);
+            obj.masses = reshape(obj.masses, obj.sideLength + 1, obj.sideLength + 1, obj.sideLength + 1);
             for i = 1 : obj.sideLength
                 for j = 1 : obj.sideLength
                     for k = 1 : obj.sideLength
                         if obj.genome(i, j, k) ~= 0
-                            masses = obj.unitCubeAddMass(masses, i, j, k);
+                            obj = obj.unitCubeAddMass(i, j, k);
                         end
                     end
                 end

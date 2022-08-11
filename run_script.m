@@ -1,9 +1,10 @@
 clc
+close all
 clear all
 
 %define parameters
-sideLength = 2;
-popSize = 20;
+sideLength = 4;
+popSize = 64;
 nWorker = 6;
 iteration = 10;
 logInterval = 2;

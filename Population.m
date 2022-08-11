@@ -120,7 +120,7 @@ classdef Population
             %   Save the current genomes and speeds of population
             popGroup = obj.group;
             disp('logging')
-            save population.mat popGroup
+            save saved_population/population.mat popGroup
         end
     end
 end

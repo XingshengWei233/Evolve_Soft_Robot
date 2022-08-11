@@ -1,5 +1,5 @@
 classdef Renderer
-    %RENDERER Render soft robot to image and video
+    %RENDERER Render soft robot to images and videos
     
 
     properties
@@ -116,7 +116,7 @@ classdef Renderer
         function obj = video(obj)
             %   Write a video of episode to file
             fps = 25;
-            v = VideoWriter('test.avi');
+            v = VideoWriter('video_output/test.avi');
             v.FrameRate = fps;
             open(v);
             maxSteps = obj.sim.maxSteps;           

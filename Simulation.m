@@ -1,5 +1,5 @@
 classdef Simulation
-    %SIMULATION Make sumulation environments with default parameters
+    %SIMULATION Make simulation environments with default parameters
     %   can step the robot and evaluate the speed on X direction
     
 
